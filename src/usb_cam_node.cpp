@@ -125,7 +125,10 @@ std::string resolve_device_path(const std::string & path)
 {
   if (std::filesystem::is_symlink(path)) {
     // For some reason read_symlink only returns videox
-    return "/dev/" + std::string(std::filesystem::read_symlink(path));
+    // For some reason read_symlink only returns videox
+    auto f = std::filesystem::path(path);
+    return std::filesystem::canonical(f.parent_path() / std::filesystem::read_symlink(f));
+    // return "/dev/" + std::string(std::filesystem::read_symlink(path));
   }
   return path;
 }
